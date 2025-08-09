@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import React from 'react';
 import './App.scss';
 
@@ -24,11 +25,18 @@ export class App extends React.Component<{}, State> {
   componentDidMount(): void {
     this.setState({
       timerId: window.setInterval(() => {
+        const oldClockName = this.state.clockName;
+
         this.setState({ clockName: getRandomName() });
+        console.warn(`Renamed from ${oldClockName} to ${this.state.clockName}`);
       }, 3300),
     });
 
-    window.setInterval(() => this.setState({ today: new Date() }), 1000);
+    window.setInterval(() => {
+      this.setState({ today: new Date() });
+
+      console.log(this.state.today.toUTCString().slice(-12, -4));
+    }, 1000);
   }
 
   // this code stops the timer
