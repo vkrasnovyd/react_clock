@@ -8,9 +8,9 @@ function getRandomName(): string {
 }
 
 type State = {
-  today: Date,
-  clockName: string,
-  timerId: number,
+  today: Date;
+  clockName: string;
+  timerId: number;
 };
 
 export class App extends React.Component<{}, State> {
