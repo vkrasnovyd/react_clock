@@ -27,6 +27,8 @@ export class App extends React.Component<{}, State> {
         this.setState({ clockName: getRandomName() });
       }, 3300),
     });
+
+    window.setInterval(() => this.setState({ today: new Date() }), 1000);
   }
 
   // this code stops the timer
