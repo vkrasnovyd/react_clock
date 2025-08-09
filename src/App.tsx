@@ -24,19 +24,25 @@ export class App extends React.Component<{}, State> {
   // This code starts a timer
   componentDidMount(): void {
     this.setState({
-      timerId: window.setInterval(() => {
-        const oldClockName = this.state.clockName;
-
-        this.setState({ clockName: getRandomName() });
-        console.warn(`Renamed from ${oldClockName} to ${this.state.clockName}`);
-      }, 3300),
+      timerId: window.setInterval(
+        () => this.setState({ clockName: getRandomName() }),
+        3300,
+      ),
     });
 
-    window.setInterval(() => {
-      this.setState({ today: new Date() });
+    window.setInterval(() => this.setState({ today: new Date() }), 1000);
+  }
 
+  componentDidUpdate(prevState: Readonly<State>): void {
+    if (prevState.today !== this.state.today) {
       console.log(this.state.today.toUTCString().slice(-12, -4));
-    }, 1000);
+    }
+
+    if (prevState.clockName !== this.state.clockName) {
+      console.warn(
+        `Renamed from ${prevState.clockName} to ${this.state.clockName}`,
+      );
+    }
   }
 
   // this code stops the timer
