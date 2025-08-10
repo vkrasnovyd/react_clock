@@ -2,40 +2,25 @@
 import React from 'react';
 
 type Props = { clockName: string };
+type State = { time: string };
 
-type State = {
-  today: Date;
-  timerId: number;
-};
+export class Clock extends React.Component<Props, State> {
+  timerId = 0;
 
-export class Clock extends React.PureComponent<Props, State> {
-  state: State = {
-    today: new Date(),
-    timerId: 0,
-  };
+  getCurrentTime = () => new Date().toUTCString().slice(-12, -4);
 
-  getNormalizedTime = () => this.state.today.toUTCString().slice(-12, -4);
+  state: State = { time: this.getCurrentTime() };
 
   componentDidMount(): void {
-    const currentTime = new Date();
+    this.timerId = window.setInterval(() => {
+      const currentTime = this.getCurrentTime();
 
-    this.setState({
-      today: currentTime,
-      timerId: window.setInterval(
-        () => this.setState({ today: new Date() }),
-        1000,
-      ),
-    });
+      this.setState({ time: currentTime });
+      console.log(currentTime);
+    }, 1000);
   }
 
-  componentDidUpdate(
-    prevProps: Readonly<Props>,
-    prevState: Readonly<State>,
-  ): void {
-    if (prevState.today !== this.state.today) {
-      console.log(this.getNormalizedTime());
-    }
-
+  componentDidUpdate(prevProps: Readonly<Props>) {
     if (prevProps.clockName !== this.props.clockName) {
       console.warn(
         `Renamed from ${prevProps.clockName} to ${this.props.clockName}`,
@@ -44,7 +29,9 @@ export class Clock extends React.PureComponent<Props, State> {
   }
 
   componentWillUnmount(): void {
-    window.clearInterval(this.state.timerId);
+    if (this.timerId) {
+      window.clearInterval(this.timerId);
+    }
   }
 
   render() {
@@ -54,7 +41,7 @@ export class Clock extends React.PureComponent<Props, State> {
 
         {' time is '}
 
-        <span className="Clock__time">{this.getNormalizedTime()}</span>
+        <span className="Clock__time">{this.state.time}</span>
       </div>
     );
   }

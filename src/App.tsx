@@ -26,8 +26,7 @@ export class App extends React.Component<{}, State> {
     this.setState({ hasClock: false });
   };
 
-  showClock = (event: MouseEvent) => {
-    event.preventDefault();
+  showClock = () => {
     this.setState({ hasClock: true });
   };
 
@@ -39,14 +38,16 @@ export class App extends React.Component<{}, State> {
       ),
     });
 
-    document.addEventListener('click', this.showClock);
+    document.addEventListener('mousedown', this.showClock);
     document.addEventListener('contextmenu', this.hideClock);
   }
 
   componentWillUnmount(): void {
-    window.clearInterval(this.state.timerId);
+    if (this.state.timerId) {
+      window.clearInterval(this.state.timerId);
+    }
 
-    document.removeEventListener('click', this.showClock);
+    document.removeEventListener('mousedown', this.showClock);
     document.removeEventListener('contextmenu', this.hideClock);
   }
 
