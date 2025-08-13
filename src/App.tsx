@@ -1,4 +1,4 @@
-import { FC, useState } from 'react';
+import { FC, useEffect, useRef, useState } from 'react';
 import './App.scss';
 import { Clock } from './components/Clock';
 
@@ -9,8 +9,8 @@ function getRandomName(): string {
 }
 
 export const App: FC = () => {
+  const timerId = useRef(0);
   const [clockName, setClockName] = useState('Clock-0');
-  const [timerId, setTimerId] = useState(0);
   const [hasClock, setHasClock] = useState(true);
 
   const hideClock = (event: MouseEvent): void => {
@@ -20,26 +20,24 @@ export const App: FC = () => {
 
   const showClock = (): void => setHasClock(true);
 
-  // componentDidMount(): void {
-  //   this.setState({
-  //     timerId: window.setInterval(
-  //       () => this.setState({ clockName: getRandomName() }),
-  //       3300,
-  //     ),
-  //   });
+  useEffect(() => {
+    timerId.current = window.setInterval(
+      () => setClockName(getRandomName()),
+      3300,
+    );
 
-  //   document.addEventListener('mousedown', this.showClock);
-  //   document.addEventListener('contextmenu', this.hideClock);
-  // }
+    document.addEventListener('mousedown', showClock);
+    document.addEventListener('contextmenu', hideClock);
 
-  // componentWillUnmount(): void {
-  //   if (this.state.timerId) {
-  //     window.clearInterval(this.state.timerId);
-  //   }
+    return () => {
+      if (timerId.current) {
+        window.clearInterval(timerId.current);
+      }
 
-  //   document.removeEventListener('mousedown', this.showClock);
-  //   document.removeEventListener('contextmenu', this.hideClock);
-  // }
+      document.removeEventListener('mousedown', showClock);
+      document.removeEventListener('contextmenu', hideClock);
+    };
+  }, []);
 
   return (
     <div className="App">
