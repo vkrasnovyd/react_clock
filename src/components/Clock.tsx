@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import React from 'react';
 
 type Props = { clockName: string };
@@ -16,12 +15,14 @@ export class Clock extends React.Component<Props, State> {
       const currentTime = this.getCurrentTime();
 
       this.setState({ time: currentTime });
+      // eslint-disable-next-line no-console
       console.log(currentTime);
     }, 1000);
   }
 
   componentDidUpdate(prevProps: Readonly<Props>) {
     if (prevProps.clockName !== this.props.clockName) {
+      // eslint-disable-next-line no-console
       console.warn(
         `Renamed from ${prevProps.clockName} to ${this.props.clockName}`,
       );
